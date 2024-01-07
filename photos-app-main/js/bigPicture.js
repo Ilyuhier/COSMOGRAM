@@ -1,4 +1,4 @@
-import { photosArray } from "./main.js"
+import { photosArray } from "./dataGenerator.js"
 
 export function bigPicture(evt){
   const body = document.querySelector('body')

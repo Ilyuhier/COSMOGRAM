@@ -1,4 +1,5 @@
 import { displayPictures } from "./displayPicture.js";
+export let globalPhotosArray; 
 
 async function showData(){
   try{
@@ -9,6 +10,7 @@ async function showData(){
     }
 
     const photosArray = await response.json()
+    globalPhotosArray = structuredClone(photosArray)
     console.log(photosArray)
     displayPictures(photosArray)
   } catch (error) {
@@ -22,7 +24,7 @@ import { bigPicture } from "./bigPicture.js"
 document.querySelector('.pictures').addEventListener('click', checking)
 function checking(evt){
   if (evt.target.tagName === 'IMG'||evt.target.tagName === 'P'||evt.target.tagName === 'SPAN'){
-    bigPicture(evt)
+    bigPicture(evt, globalPhotosArray)
   }
 }
 

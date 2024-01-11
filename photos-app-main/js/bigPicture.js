@@ -1,6 +1,6 @@
-import { photosArray } from "./dataGenerator.js"
-
-export function bigPicture(evt){
+let photosArray;
+export function bigPicture(evt, globalPhotosArray){
+  photosArray = structuredClone(globalPhotosArray)
   const body = document.querySelector('body')
   body.classList.add('modal-open')
   console.log(evt.target.tagName)

@@ -1,4 +1,6 @@
 let photosArray;
+const socialComments = document.querySelector('.social__comments')
+let commentsCounter = 0;
 export function bigPicture(evt, globalPhotosArray){
   photosArray = structuredClone(globalPhotosArray)
   const body = document.querySelector('body')
@@ -19,13 +21,11 @@ export function bigPicture(evt, globalPhotosArray){
   likesCount.textContent = pictureObject.likes
   commentsCount.textContent = pictureObject.comments.length
   socialCaption.textContent = pictureObject.description
-  //Ховаємо лічильник
-  const commentsCounterBlock = document.querySelector('.social__comment-count')
-  commentsCounterBlock.style.display = 'none'
-  //Закінчили ховати
+  socialComments.innerHTML = ''
 
-  showComments(pictureObject)
-
+  const uploadMore = document.querySelector('#uploadMore')
+  showComments()
+  uploadMore.addEventListener('click', showComments)
   const reset = document.querySelector('.big-picture__cancel')
   reset.addEventListener('click', closeBigPicture)
   document.addEventListener('keydown', keyCheck)
@@ -35,15 +35,41 @@ export function bigPicture(evt, globalPhotosArray){
     }
   }
 
-
   function closeBigPicture(){
+    commentsCounter = 0
+    uploadMore.classList.remove('hidden')
     body.classList.remove('modal-open')
     bigPic.classList.add('hidden')
     document.removeEventListener('keydown', keyCheck)
+    uploadMore.removeEventListener('click', showComments)
+  }
+
+  function showComments(){
+    const shownCounter = document.querySelector('.comments-shown')
+    const countedComments = commentsCounter
+    if ((pictureObject.comments.length - commentsCounter) <= 6){
+      commentsCounter = pictureObject.comments.length
+      uploadMore.classList.add('hidden')
+      console.log('first if')
+    } else{
+      commentsCounter += 5; 
+      console.log('second if')
+    }
+    for(let i = countedComments; i<commentsCounter; i++){
+      showComment(pictureObject.comments[i])
+    }
+    console.log('else')
+    // if (pictureObject.comments.length === commentsCounter && !uploadMore.classList.contains('hidden')){
+    //   uploadMore.classList.add('hidden')
+    // }
+    shownCounter.textContent = commentsCounter
+    console.log('comments counter '+commentsCounter) //wrkn' momnts
+    console.log('counted comments '+countedComments)
+    console.log('length '+pictureObject.comments.length)
   }
 }
 
-function showComment(comment, socialComments){
+function showComment(comment){
   const socialComment = document.querySelector('#social__comment').cloneNode(true).content
   const socialCommentImg = socialComment.querySelector('.social__picture')
   const socialCommentAuthor = socialComment.querySelector('.social__author')
@@ -56,12 +82,3 @@ function showComment(comment, socialComments){
   fragment.appendChild(socialComment)
   socialComments.appendChild(fragment)
 }
-
-function showComments(pictureObject){
-  const socialComments = document.querySelector('.social__comments')
-  socialComments.innerHTML = ''
-  for(let i = 0; i<5; i++){
-    showComment(pictureObject.comments[i], socialComments)
-  }
-}
-

@@ -42,6 +42,7 @@ export function bigPicture(evt, globalPhotosArray){
     bigPic.classList.add('hidden')
     document.removeEventListener('keydown', keyCheck)
     uploadMore.removeEventListener('click', showComments)
+    reset.removeEventListener('click', closeBigPicture)
   }
 
   function showComments(){

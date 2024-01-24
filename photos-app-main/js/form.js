@@ -6,15 +6,22 @@ const descriptionArea = form.querySelector('.text__description')
 const hashTagInvalidSymbols = ['#','@','$','.',',','-']
 let validHashTagsArray = true
 
+import { createSlider } from "./filter.js"
+import { chooseFilter } from "./filter.js"
+
 export function displayForm(){
   body.classList.add('modal-open')
   form.classList.remove('hidden')
   hashTagArea.required = false
+  turnOnScale()
   const submitButton = document.querySelector('.img-upload__submit')
   submitButton.addEventListener('click', formCheck)
   const reset = document.querySelector('.img-upload__cancel')
   reset.addEventListener('click', closeBigPicture)
   document.addEventListener('keydown', keyCheck)
+  createSlider()
+  const effectList = document.querySelector('.effects__list')
+  effectList.addEventListener('change', chooseFilter)
 }
 
 function formCheck(){
@@ -92,4 +99,35 @@ function closeBigPicture(){
   descriptionArea.value =''
   imgUpload.value =''
   document.removeEventListener('keydown', keyCheck)
+  document  .removeEventListener('click', closeBigPicture)
 }
+
+function turnOnScale(){
+  const scaleField = document.querySelector('.scale')
+  
+  const downscale = document.querySelector('.scale__control--smaller')
+  const upscale = document.querySelector('.scale__control--bigger')
+  scaleField.addEventListener('click', scaling)
+}
+
+function scaling(evt){
+  const preview = document.querySelector('.img-upload__preview').children[0]
+  const scaleControl = document.querySelector('.scale__control--value')
+  let value = +scaleControl.value.split('%')[0]
+  if (evt.target.classList.contains('scale__control--smaller')){
+    if(value === 25){
+      return
+    }
+    value -= 25
+  } else if (evt.target.classList.contains('scale__control--bigger')){
+    if(value === 100){
+      return
+    }
+    value += 25
+    
+  } else return
+  scaleControl.value = `${value}%`
+  preview.style.transform = `scale(${scaleControl.value})`
+}
+
+//connect values to photoScale

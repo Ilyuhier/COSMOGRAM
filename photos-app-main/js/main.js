@@ -19,12 +19,12 @@ async function showData(){
 }
 
 showData()
-
-import { bigPicture } from "./bigPicture.js"
+displayForm()//REMEMBER TO DELETE!!!
+import * as bigPictureJs from "./bigPicture.js"
 document.querySelector('.pictures').addEventListener('click', checking)
 function checking(evt){
-  if (evt.target.tagName === 'IMG'||evt.target.tagName === 'P'||evt.target.tagName === 'SPAN'){
-    bigPicture(evt, globalPhotosArray)
+  if (evt.target.className === 'picture__img'||evt.target.tagName === 'P'){
+    bigPictureJs.bigPicture(evt, globalPhotosArray)
   }
 }
 

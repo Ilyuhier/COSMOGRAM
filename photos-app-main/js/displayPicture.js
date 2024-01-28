@@ -6,7 +6,7 @@ function displayPicture(photoObject){
   photoImg.src = photoObject.url
   photoComment.textContent = photoObject.comments.length
   photoLikes.textContent = photoObject.likes
-  photoImg.dataset.id = photoObject.id 
+  photoImg.dataset.id = photoObject.id
   // додоаю дата ід до всіх елементів, які можуть натиснутись
   photoComment.dataset.id = photoObject.id 
   photoLikes.dataset.id = photoObject.id 

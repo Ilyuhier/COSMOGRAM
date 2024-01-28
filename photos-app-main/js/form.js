@@ -4,12 +4,21 @@ const imgUpload = document.querySelector('#upload-file')
 const hashTagArea = form.querySelector('.text__hashtags')
 const descriptionArea = form.querySelector('.text__description')
 const hashTagInvalidSymbols = ['#','@','$','.',',','-']
+const scaleControl = document.querySelector('.scale__control--value')
+const preview = document.querySelector('.img-upload__preview').children[0]
 let validHashTagsArray = true
+const reader = new FileReader();
 
 import { createSlider } from "./filter.js"
 import { chooseFilter } from "./filter.js"
+import { destroySlider } from "./filter.js"
 
-export function displayForm(){
+export function displayForm(evt){
+  const sellectedFile = evt.target.files[0];
+  reader.onload = function(evt){
+    preview.src = evt.target.result;
+  }
+  reader.readAsDataURL(sellectedFile);
   body.classList.add('modal-open')
   form.classList.remove('hidden')
   hashTagArea.required = false
@@ -28,7 +37,6 @@ function formCheck(){
   validHashTagsArray = true
   const hashTagsSet = new Set ;
   const hashTagsArray = hashTagArea.value.split(' ')
-  console.log(hashTagsArray)
   if (hashTagArea.value.length === 0){
     validHashTagsArray = true
   } else if (hashTagsArray.length > 5){
@@ -41,12 +49,14 @@ function formCheck(){
   if (validHashTagsArray === true){
       hashTagArea.setCustomValidity('')
   }
-  console.log(validHashTagsArray)
+
   if (descriptionArea.value.length > 140){
     descriptionArea.setCustomValidity('довжина коментаря не може становити більше 140 символів')
   } else {
     descriptionArea.setCustomValidity('')
   }
+  
+  document.addEventListener('submit', publishing)
 }
 
 function hashTagCheck(hashTag, hashTagsSet){
@@ -80,7 +90,6 @@ function hashTagCheck(hashTag, hashTagsSet){
     validHashTagsArray = false
   }
   hashTagsSet.add(lowerCaseHashTag)
-  console.log(hashTagsSet)
 }
 
 function keyCheck(event){
@@ -100,34 +109,73 @@ function closeBigPicture(){
   imgUpload.value =''
   document.removeEventListener('keydown', keyCheck)
   document  .removeEventListener('click', closeBigPicture)
+  destroySlider()
+  reloadScale()
+  preview.src = ''
 }
 
 function turnOnScale(){
   const scaleField = document.querySelector('.scale')
-  
-  const downscale = document.querySelector('.scale__control--smaller')
-  const upscale = document.querySelector('.scale__control--bigger')
   scaleField.addEventListener('click', scaling)
 }
 
 function scaling(evt){
-  const preview = document.querySelector('.img-upload__preview').children[0]
-  const scaleControl = document.querySelector('.scale__control--value')
   let value = +scaleControl.value.split('%')[0]
-  if (evt.target.classList.contains('scale__control--smaller')){
-    if(value === 25){
-      return
-    }
-    value -= 25
-  } else if (evt.target.classList.contains('scale__control--bigger')){
-    if(value === 100){
-      return
-    }
-    value += 25
-    
-  } else return
+  if (evt.target.classList.contains('scale__control--smaller') && value === 25 ||evt.target.classList.contains('scale__control--bigger') && value === 100 ){
+    return
+  }
+  switch (true){
+    case evt.target.classList.contains('scale__control--smaller'):
+    value -= 25;
+    break;
+    case evt.target.classList.contains('scale__control--bigger'):
+    value += 25;
+    break;
+  }
   scaleControl.value = `${value}%`
   preview.style.transform = `scale(${scaleControl.value})`
 }
 
-//connect values to photoScale
+function reloadScale(){
+  scaleControl.value = '100%'
+  preview.style.transform = ''
+}
+
+async function publishing(evt){
+  evt.preventDefault()
+  const formToPublish = document.querySelector('.img-upload__form')
+  const formData = new FormData(formToPublish)
+  for (let key of formData.keys()) {
+    console.log(`KEY: ${key}`)
+    console.log(formData.get(key));
+  }
+  const url = 'http://localhost:3000/picture'
+  const data = {}
+  data.url = preview.src
+  data.description = formData.get('description')
+  data.hashtags = formData.get('hashtags')
+  data.scale = formData.get('scale')
+  data.effect = formData.get('effect')
+  data.effectLevel = formData.get('effect-level')
+  
+  console.log(data)
+
+  try {
+    const init = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+      "Content-Type": "application/json",
+    },
+    }
+    const response = await fetch(url, init);
+    const json = await response.json();
+    alert(`Congrats!!! ${JSON.stringify(json)}`)
+  }
+  catch (error){
+    console.log(`Ooops ${error}`)
+  }
+
+
+  closeBigPicture()
+}

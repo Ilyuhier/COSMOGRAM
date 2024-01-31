@@ -5,10 +5,8 @@ export function bigPicture(evt, globalPhotosArray){
   photosArray = structuredClone(globalPhotosArray)
   const body = document.querySelector('body')
   body.classList.add('modal-open')
-  console.log(evt.target.tagName)
   const bigPic = document.querySelector('.big-picture')
   bigPic.classList.remove('hidden')
-  console.log(typeof(evt.target.dataset.id))
   const bigPicImg = document.querySelector('.big-picture__img')
   const likesCount = document.querySelector('.likes-count')
   const commentsCount = document.querySelector('.comments-count')
@@ -51,22 +49,13 @@ export function bigPicture(evt, globalPhotosArray){
     if ((pictureObject.comments.length - commentsCounter) <= 6){
       commentsCounter = pictureObject.comments.length
       uploadMore.classList.add('hidden')
-      console.log('first if')
     } else{
       commentsCounter += 5; 
-      console.log('second if')
     }
     for(let i = countedComments; i<commentsCounter; i++){
       showComment(pictureObject.comments[i])
     }
-    console.log('else')
-    // if (pictureObject.comments.length === commentsCounter && !uploadMore.classList.contains('hidden')){
-    //   uploadMore.classList.add('hidden')
-    // }
     shownCounter.textContent = commentsCounter
-    console.log('comments counter '+commentsCounter) //wrkn' momnts
-    console.log('counted comments '+countedComments)
-    console.log('length '+pictureObject.comments.length)
   }
 }
 

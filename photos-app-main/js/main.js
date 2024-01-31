@@ -3,7 +3,7 @@ export let globalPhotosArray;
 
 async function showData(){
   try{
-    const response = await fetch('http://127.0.0.1:4026/photo')
+    const response = await fetch('http://localhost:3000/photos')
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -19,7 +19,7 @@ async function showData(){
 }
 
 showData()
-displayForm()//REMEMBER TO DELETE!!!
+
 import * as bigPictureJs from "./bigPicture.js"
 document.querySelector('.pictures').addEventListener('click', checking)
 function checking(evt){

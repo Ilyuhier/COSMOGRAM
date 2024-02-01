@@ -170,12 +170,19 @@ async function publishing(evt){
     }
     const response = await fetch(url, init);
     const json = await response.json();
-    alert(`Congrats!!! ${JSON.stringify(json)}`)
+    // alert(`Congrats!!! ${JSON.stringify(json)}`)
+    successStatus('success')
   }
   catch (error){
     console.log(`Ooops ${error}`)
+    successStatus('error')
   }
+}
 
-
+function successStatus(messageType){
   closeBigPicture()
+  const message = document.querySelector(`#${messageType}`).cloneNode(true).content
+  body.appendChild(message)
+  const reloadButton = document.querySelector(`.${messageType}__button`)
+  reloadButton.addEventListener('click', () => {location.reload()})
 }

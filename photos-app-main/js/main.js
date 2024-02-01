@@ -1,5 +1,7 @@
 import { displayPictures } from "./displayPicture.js";
 export let globalPhotosArray; 
+import { filterSelect } from "./picFilter.js";
+import { debounce } from "./picFilter.js";
 
 async function showData(){
   try{
@@ -13,6 +15,8 @@ async function showData(){
     globalPhotosArray = structuredClone(photosArray)
     console.log(photosArray)
     displayPictures(photosArray)
+    const filters = document.querySelector('.img-filters__form')
+    filters.addEventListener('click', (evt)=>{debounce(filterSelect(evt, photosArray), 4000)}); 
   } catch (error) {
     console.error('There has been a problem with your fetch operation:', error);
   }
